@@ -15,4 +15,4 @@ ssh ubuntu@$IP -i $KEY 'sudo wget https://raw.githubusercontent.com/arthurzinck/
 echo "getting vpn conf"
 scp -i $KEY ubuntu@$IP:client.ovpn .
 
-openvpn client.ovpn
+sudo openvpn client.ovpn

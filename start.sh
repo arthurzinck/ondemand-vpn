@@ -1,23 +1,18 @@
 #!/bin/bash
 
 KEY="~/.ssh/amazon.pem"
+echo "Launching instance"
 IP=$(terraform apply -auto-approve |awk '{print $3}'| sed 's/"//g')
-
-#IP=52.47.147.117
+echo "Instance launched... starting"
 echo "IP:" $IP
 #echo "KEY:" $KEY
+echo "Instance launched... starting... please wait"
 sleep 3m
-
 echo "connecting to host" $IP
-ssh ubuntu@$IP -i $KEY <<EOF
-  curl ifconfig.me
-  sudo -i
-  apt update && apt upgrade -y
-  curl -O https://raw.githubusercontent.com/angristan/openvpn-install/master/openvpn-install.sh 
-  chmod +x openvpn-install.sh
-  AUTO_INSTALL=y ./openvpn-install.sh
-  cp client.ovpn /home/ubuntu/
-  exit
-EOF
+echo "ssh ubuntu@$IP -i $KEY"
+ssh ubuntu@$IP -i $KEY 'sudo wget https://raw.githubusercontent.com/arthurzinck/ondemand-vpn/master/install.sh -O install.sh && sudo bash install.sh'
+
 echo "getting vpn conf"
-scp -i $KEY ubuntu@$IP:client.ovpn . 
+scp -i $KEY ubuntu@$IP:client.ovpn .
+
+openvpn client.ovpn
